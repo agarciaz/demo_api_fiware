@@ -72,6 +72,10 @@ def consulta_datos (datos_json):
     # print r.status_code, json.dumps (r.json())
     return r.json ()
 
+# funcion para borrar datos al context brocker
+def borra_datos (id):
+    r = requests.delete ('http://%s:%d/v1/contextEntities/%s' % (servidor, puerto, id), headers=headers)
+    print r.status_code, r.text
 
 # funciones test 
 def test_version ():
@@ -128,8 +132,13 @@ def test_modifica_datos ():
     habitacion1 = datos_modificar_json ("habitacion1", "habitacion", atributos_h1)
     inserta_datos (habitacion1)
 
+def test_borra_datos ():
+    id = "habitacion1"
+    borra_datos (id)
+
 if __name__ == "__main__":
     # test_version ()
     # test_agrega_habitaciones ()
-    test_modifica_datos ()
+    # test_modifica_datos ()
+    test_borra_datos ()
     test_consulta_habitaciones ()
