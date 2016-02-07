@@ -24,6 +24,22 @@ def datos_agregar_json (id, tipo, lista_atributos):
     }
     return datos
 
+# funcion que regresa los datos en estructura json para modificar datos al context brocker
+def datos_modificar_json (id, tipo, lista_atributos):
+    datos = {
+        "contextElements": [
+            {
+                "type": tipo,
+                "isPattern": "false",
+                "id": id,
+                "attributes": lista_atributos
+            }
+        ],
+        "updateAction": "UPDATE"
+    }
+    
+    return datos
+
 # funcion que regresa los datos en estructura json para consultar datos al context brocker
 def datos_consulta_json (id, tipo, es_expreg=False):
     val_expreg = "false"
@@ -96,12 +112,24 @@ def test_agrega_habitaciones ():
     inserta_datos (habitacion2)
 
 def test_consulta_habitaciones ():
-    datos = datos_consulta_json ("habitacion*", "habitacion", True)
+    datos = datos_consulta_json ("habitacion1", "habitacion", False)
     # print datos
     r = consulta_datos (datos)
     print r
 
+def test_modifica_datos ():
+    atributos_h1 = [
+        {
+            "name": "temperatura",
+            "type": "float",
+            "value": "0"
+        }
+    ]
+    habitacion1 = datos_modificar_json ("habitacion1", "habitacion", atributos_h1)
+    inserta_datos (habitacion1)
+
 if __name__ == "__main__":
     # test_version ()
     # test_agrega_habitaciones ()
+    test_modifica_datos ()
     test_consulta_habitaciones ()
