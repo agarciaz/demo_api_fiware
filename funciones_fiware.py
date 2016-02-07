@@ -24,6 +24,21 @@ def datos_agregar_json (id, tipo, lista_atributos):
     }
     return datos
 
+# funcion que regresa los datos en estructura json para consultar datos al context brocker
+def datos_consulta_json (id, tipo, es_expreg=False):
+    val_expreg = "false"
+    if es_expreg:
+        val_expreg = "true"
+    datos = {
+        "entities": [
+            {
+                "type": tipo,
+                "isPattern": val_expreg,
+                "id": id
+            }
+        ]
+    }
+    return datos
 
 # funcion que consulta la version del context brocker
 def version_fiware ():
@@ -34,6 +49,13 @@ def version_fiware ():
 def inserta_datos (datos_json):
     r = requests.post ('http://%s:%d/v1/updateContext' % (servidor, puerto), headers=headers, data=json.dumps (datos_json))
     print r.status_code, r.text, r.json ()
+
+# funcion para consultar datos al context brocker
+def consulta_datos (datos_json):
+    r = requests.post ('http://%s:%d/v1/queryContext' % (servidor, puerto), headers=headers, data=json.dumps (datos_json))
+    # print r.status_code, json.dumps (r.json())
+    return r.json ()
+
 
 # funciones test 
 def test_version ():
@@ -73,7 +95,13 @@ def test_agrega_habitaciones ():
     inserta_datos (habitacion1)
     inserta_datos (habitacion2)
 
+def test_consulta_habitaciones ():
+    datos = datos_consulta_json ("habitacion*", "habitacion", True)
+    # print datos
+    r = consulta_datos (datos)
+    print r
 
 if __name__ == "__main__":
     # test_version ()
-    test_agrega_habitaciones ()
+    # test_agrega_habitaciones ()
+    test_consulta_habitaciones ()
