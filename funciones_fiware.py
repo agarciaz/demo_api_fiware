@@ -24,6 +24,16 @@ def datos_agregar_json (id, tipo, lista_atributos):
     }
     return datos
 
+# funcion que regresa los datos en estructura json para agregar datos al context brocker
+# recibe los datos simples en formato json (sin contextElements y sin updataAction)
+def arma_datos_agregar_json (json):
+    datos = {
+        "contextElements": [json],
+        "updateAction": "APPEND"
+    }
+    return datos
+
+
 # funcion que regresa los datos en estructura json para modificar datos al context brocker
 def datos_modificar_json (id, tipo, lista_atributos):
     datos = {
@@ -83,6 +93,13 @@ def consulta_datos (datos_json):
 def borra_datos (id):
     r = requests.delete ('http://%s:%d/v1/contextEntities/%s' % (servidor, puerto, id), headers=headers)
     print r.status_code, r.text
+
+# funcion para insertar los datos del archivo contaminantes al context brocker
+def carga_contaminantes ():
+    datos_j = json.load (open ("static/contaminantes.txt"))
+    for d_j in datos_j:
+        # print json.dumps (arma_datos_agregar_json (d_j))
+        inserta_datos (arma_datos_agregar_json (d_j))
 
 # funciones test 
 def test_version ():
@@ -257,6 +274,8 @@ def test_grafica ():
     plt.bar (range(len(temperaturas)), temperaturas)
     plt.show ()
 
+def test_carga_contaminantes ():
+    carga_contaminantes ()
 
 if __name__ == "__main__":
     # test_version ()
@@ -264,4 +283,6 @@ if __name__ == "__main__":
     # test_modifica_datos ()
     # test_borra_datos ()
     # test_consulta_habitaciones ()
-    test_grafica ()
+    # test_grafica ()
+    test_carga_contaminantes ()
+
